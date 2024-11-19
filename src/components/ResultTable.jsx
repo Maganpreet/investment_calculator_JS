@@ -1,31 +1,39 @@
-import { calculateInvestmentResults } from "../util/investment"
+import { calculateInvestmentResults, formatter } from "../util/investment"
 
 export function ResultTable({userInput}) {
 
-    const annualData = calculateInvestmentResults(userInput[0].value, userInput[1].value, userInput[2].value, userInput[3].value);
+    let variables = {};
+    const keys = ['initialInvestment', 'annualInvestment', 'expectedReturn', 'duration']; 
+    for(let i=0; i < userInput.length; i++) {
+        variables[keys[i]] = Number(userInput[i].value);
+    }
+
+    const annualData = calculateInvestmentResults(variables);
+
+    console.log(annualData[0]);
 
     return (
-        <table>
-            <thead>
-                <tr>
-                    <th value="Year"></th>
-                    <th value="Interest"></th>
-                    <th value="Value End Of The Year"></th>
-                    <th value="Annual Investment"></th>
-                </tr>
-            </thead>
-            <tbody>
-                {
-                    annualData.map((data, key) => {
-                        <tr>
-                            <td value={data.year}></td>
-                            <td value={data.interest}></td>
-                            <td value={data.valueEndOfYear}></td>
-                            <td value={data.annualInvestment}></td>
-                        </tr>
-                    })
-                }
-            </tbody>
-        </table>
-    )
+      <table id="result">
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th>Interest</th>
+            <th>Value End Of The Year</th>
+            <th>Annual Investment</th>
+          </tr>
+        </thead>
+        <tbody>
+            {
+                annualData.map((data, key) => (
+                  <tr key={key}>
+                    <td>{data.year}</td>
+                    <td>{formatter.format(data.interest)}</td>
+                    <td>{formatter.format(data.valueEndOfYear)}</td>
+                    <td>{data.annualInvestment}</td>
+                  </tr>  
+                ))
+            }
+        </tbody>
+      </table>
+    );
 }
